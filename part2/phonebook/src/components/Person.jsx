@@ -1,3 +1,3 @@
-const Person = ({ person }) => <p>{person.name}</p>
+const Person = ({ person }) => <p>{person.name} {person.phone}</p>
 
 export default Person
