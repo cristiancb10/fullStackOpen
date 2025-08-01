@@ -1,5 +1,7 @@
 import { useState } from "react";
-import Person from "./components/Person";
+import Persons from "./components/Persons";
+import Filter from "./components/Filter";
+import PersonForm from "./components/PersonForm";
 
 const App = () => {
   const [ persons, setPersons ] = useState([
@@ -26,10 +28,16 @@ const App = () => {
       number: newNumber,
       id: persons.length + 1
     }
-    const nameExists = persons.some(person => person.name.toLowerCase() === newName.toLowerCase())
-    nameExists ? alert(`${newName} is already added to phonebook`) 
-    : setPersons(persons.concat(nameObject))
     
+    const nameExists = persons.some(person => person.name.toLowerCase() === newName.toLowerCase())
+    
+    if (nameExists) {
+      alert(`${newName} is already added to phonebook`) 
+    }
+    else {
+      setPersons(persons.concat(nameObject))
+    }
+
     setName('')
     setNumber('') 
   }
@@ -41,25 +49,16 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with <input value={filter} onChange={handleFilterChange}/>
-      </div>
+      <Filter value={filter} handleFilterChange={handleFilterChange}/>
+
       <h2>add a new</h2>
-      <form onSubmit={addName}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange}/>
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm addName={addName} valueName={newName} valueNumber={newNumber}
+        handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}/>
+
       <h2>Numbers</h2>
       {persons.length === 0
       ? '...'
-      : personsToShow.map(person => <Person key={person.id} person={person}/>)}
+      : personsToShow.map(person => <Persons key={person.id} person={person}/>)}
     </div>
   )
 }
