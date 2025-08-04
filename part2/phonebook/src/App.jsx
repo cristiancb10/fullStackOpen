@@ -11,11 +11,9 @@ const App = () => {
   const [ filter, setFilter ] = useState('')
 
   useEffect(() => {
-    console.log('effect')
     axios
     .get('http://localhost:3001/persons')
     .then(response => {
-      console.log('promise fullfilled')
       setPersons(response.data)
     })
   }, [])
@@ -30,21 +28,24 @@ const App = () => {
     event.preventDefault()
     const nameObject = {
       name: newName,
-      number: newNumber,
-      id: persons.length + 1
+      number: newNumber
     }
     
     const nameExists = persons.some(person => person.name.toLowerCase() === newName.toLowerCase())
     
-    if (nameExists) {
-      alert(`${newName} is already added to phonebook`) 
+    if(!nameExists) {
+      axios
+        .post('http://localhost:3001/persons', nameObject)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+          setName('')
+          setNumber('') 
+        })
     }
     else {
-      setPersons(persons.concat(nameObject))
+      alert(`The name ${nameObject.name} has already been registered`)
     }
 
-    setName('')
-    setNumber('') 
   }
 
   const personsToShow = persons.filter(person => 
