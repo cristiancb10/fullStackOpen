@@ -31,8 +31,11 @@ const App = () => {
       number: newNumber
     }
     
-    const nameExists = persons.some(person => person.name.toLowerCase() === newName.toLowerCase())
-    
+    const personFind = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
+    const nameExists = Boolean(personFind)
+
+    const changedNumber = personFind ? { ...personFind, number: nameObject.number } : null
+
     if(!nameExists) {
       personService
         .create(nameObject)
@@ -43,7 +46,18 @@ const App = () => {
         })
     }
     else {
-      alert(`The name ${nameObject.name} has already been registered`)
+      if(window.confirm(`${nameObject.name} is already added to phonebook, replace the old number with a new one?`)) {
+        personService
+          .update(personFind.id, changedNumber)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id !== personFind.id ? person : returnedPerson))
+            setName('')
+            setNumber('') 
+          })
+      }
+      else{
+        return
+      }
     }
   }
 
