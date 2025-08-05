@@ -45,7 +45,21 @@ const App = () => {
     else {
       alert(`The name ${nameObject.name} has already been registered`)
     }
+  }
 
+  const deletePersonId = id => {
+    const person = persons.find(p => p.id === id)
+
+    if(window.confirm(`Delete ${person.name}?`)){
+      personService
+      .deletePerson(id)
+      .then(() => {
+        setPersons(persons.filter(person => person.id !== id))
+      })
+    }
+    else {
+      return
+    }
   }
 
   const personsToShow = persons.filter(person => 
@@ -64,7 +78,13 @@ const App = () => {
       <h2>Numbers</h2>
       {persons.length === 0
       ? '...'
-      : personsToShow.map(person => <Persons key={person.id} person={person}/>)}
+      : personsToShow.map( person => 
+          <Persons 
+            key={person.id} 
+            person={person}
+            deletePerson={() => deletePersonId(person.id)}
+          />
+      )}
     </div>
   )
 }
