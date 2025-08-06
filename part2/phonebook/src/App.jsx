@@ -9,6 +9,7 @@ const App = () => {
   const [ newName, setName ] = useState('')
   const [ newNumber, setNumber ] = useState('')
   const [ filter, setFilter ] = useState('')
+  const [ addMessage, setAddMessage ] = useState(null)
 
   useEffect(() => {
     personService
@@ -27,7 +28,7 @@ const App = () => {
   const addName = (event) => {
     event.preventDefault()
     const nameObject = {
-      name: newName,
+      name: newName.trim(),
       number: newNumber
     }
     
@@ -43,7 +44,9 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setName('')
           setNumber('') 
-        })
+          setAddMessage(`Added ${nameObject.name}`)
+          setTimeout(() => setAddMessage(null), 5000)
+        })  
     }
     else {
       if(window.confirm(`${nameObject.name} is already added to phonebook, replace the old number with a new one?`)) {
@@ -53,10 +56,12 @@ const App = () => {
             setPersons(persons.map(person => person.id !== personFind.id ? person : returnedPerson))
             setName('')
             setNumber('') 
+            setAddMessage(`Updated number of ${nameObject.name}`)
+            setTimeout(() => setAddMessage(null), 5000)    
           })
       }
-      else{
-        return
+      else {
+        return null
       }
     }
   }
@@ -80,9 +85,22 @@ const App = () => {
     person.name.toLowerCase().includes(filter.toLowerCase())
   )
 
+  const Notification = ({ message }) => {
+    if(message === null) {
+      return null
+    }
+
+    return (
+      <div className="added">
+        {message}
+      </div>
+    )
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={addMessage}/>
       <Filter value={filter} handleFilterChange={handleFilterChange}/>
 
       <h2>add a new</h2>
