@@ -21,8 +21,6 @@ const App = () => {
       setFilter([])
       return
     }
-
-    console.log('fetching contries...')
     
     const countries = country.filter(c => 
       c.name.common.toLowerCase().includes(value.toLowerCase())
